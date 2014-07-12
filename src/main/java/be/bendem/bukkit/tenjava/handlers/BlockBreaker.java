@@ -8,23 +8,29 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author bendem
  */
 public class BlockBreaker extends BaseListener {
 
-    private final TenJava         plugin;
+    private final TenJava plugin;
+    private final Map<Block, DiggerRunnable> diggingTasks;
 
     public BlockBreaker(TenJava plugin) {
         super(plugin);
         this.plugin = plugin;
+        diggingTasks = new HashMap<>();
     }
 
     @EventHandler
@@ -41,15 +47,49 @@ public class BlockBreaker extends BaseListener {
         if(!plugin.getCellUtils().isCell(atachedTo)) {
             return;
         }
-        if(atachedTo.isBlockPowered()) {
-            startDigging(itemFrame, atachedTo, getDirection(itemFrame));
+
+        registerTask(itemFrame, atachedTo, getDirection(itemFrame), atachedTo.isBlockPowered());
+    }
+
+    @EventHandler
+    public void onCellPower(BlockPhysicsEvent e) {
+        DiggerRunnable task = diggingTasks.get(e.getBlock());
+        if(task == null) {
+            return;
+        }
+
+        if(e.getBlock().isBlockPowered()) {
+            if(task.isStarted()) {
+                restartDigging(task);
+            } else {
+                task.start(plugin);
+            }
+        } else {
+            task.stop();
         }
     }
 
-    
+    @EventHandler
+    public void onCellBreak(BlockBreakEvent e) {
+        DiggerRunnable task = diggingTasks.get(e.getBlock());
+        if(task != null) {
+            task.stop();
+            diggingTasks.remove(e.getBlock());
+        }
+    }
 
-    private void startDigging(ItemFrame frame, Block cell, BlockFace direction) {
-        new DiggerRunnable(frame, cell, direction).runTaskTimer(plugin, 20, 20);
+    private void registerTask(ItemFrame frame, Block cell, BlockFace direction, boolean start) {
+        DiggerRunnable diggerRunnable = new DiggerRunnable(frame, cell, direction);
+        diggingTasks.put(cell, diggerRunnable);
+        plugin.getLogger().info("Cell registered: " + cell.getLocation());
+        if(start) {
+            diggerRunnable.start(plugin);
+        }
+    }
+
+    private void restartDigging(DiggerRunnable task) {
+        task.stop();
+        new DiggerRunnable(task).start(plugin);
     }
 
     private BlockFace getDirection(ItemFrame frame) {
@@ -77,6 +117,16 @@ public class BlockBreaker extends BaseListener {
         private final BlockFace direction;
         private Block current;
         private int numberDigged;
+        private boolean started = false;
+        private boolean stopped = false;
+
+        public DiggerRunnable(DiggerRunnable task) {
+            this.frame = task.frame;
+            this.cell = task.cell;
+            this.direction = task.direction;
+            this.current = task.current;
+            this.numberDigged = task.numberDigged;
+        }
 
         public DiggerRunnable(ItemFrame frame, Block cell, BlockFace direction) {
             this.frame = frame;
@@ -86,12 +136,24 @@ public class BlockBreaker extends BaseListener {
             this.numberDigged = 0;
         }
 
+        public BukkitTask start(JavaPlugin plugin) {
+            started = true;
+            return runTaskTimer(plugin, 0, 20);
+        }
+
+        public void stop() {
+            if(started && !stopped) {
+                stopped = true;
+                cancel();
+            }
+        }
+
         @Override
         public void run() {
             plugin.getLogger().info("Running");
             if(!frame.isValid() || frame.getItem().getType() != Material.DIAMOND_PICKAXE || plugin.getCellUtils().getPower(cell) < Config.DIG_COST) {
                 plugin.getLogger().info("Invalid action");
-                cancel();
+                stop();
                 return;
             }
 
@@ -102,12 +164,16 @@ public class BlockBreaker extends BaseListener {
                 current = current.getRelative(direction);
                 numberDigged++;
                 if(numberDigged > Config.MAX_DIG_DISTANCE) {
-                    cancel();
+                    stop();
                 }
             } else {
                 plugin.getLogger().info("No more power");
-                cancel();
+                stop();
             }
+        }
+
+        public boolean isStarted() {
+            return started;
         }
 
     }
