@@ -11,6 +11,10 @@ public abstract class BaseCommand implements Command {
     private final String name;
     private final String permission;
 
+    public BaseCommand(String name) {
+        this(name, null);
+    }
+
     public BaseCommand(String name, String permission) {
         Validate.notNull(name);
         this.name = name;

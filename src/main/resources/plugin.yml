@@ -1,3 +1,8 @@
 name: bendem-t2
 main: be.bendem.bukkit.tenjava.TenJava
 version: '${project.version}'
+
+commands:
+    energy:
+        description: "Energy main command"
+        usage: "/<command>"
