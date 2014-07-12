@@ -24,13 +24,11 @@ import java.util.regex.Pattern;
 /**
  * @author bendem
  */
-public class EnergyContainerListener extends BaseListener {
-
-    private static final Pattern PATTERN = Pattern.compile("^Energy stored ([0-9]+) / [0-9]+$");
+public class EnergyCellListener extends BaseListener {
 
     private final TenJava plugin;
 
-    public EnergyContainerListener(TenJava plugin) {
+    public EnergyCellListener(TenJava plugin) {
         super(plugin);
         this.plugin = plugin;
     }
@@ -44,16 +42,8 @@ public class EnergyContainerListener extends BaseListener {
             return;
         }
 
-        ItemMeta meta = hand.getItemMeta();
-        if(meta.hasLore() && meta.getLore().size() > 0) {
-            Matcher matcher = PATTERN.matcher(meta.getLore().get(0));
-            if(matcher.matches()) {
-                block.setMetadata(EnergyCellUtils.BLOCK_DATA, new FixedMetadataValue(plugin, Integer.parseInt(matcher.group(1))));
-                return;
-            }
-        }
-
-        block.setMetadata(EnergyCellUtils.BLOCK_DATA, new FixedMetadataValue(plugin, 0));
+        int power = plugin.getCellUtils().getPower(hand);
+        block.setMetadata(EnergyCellUtils.BLOCK_DATA, new FixedMetadataValue(plugin, power));
     }
 
     @EventHandler
@@ -82,12 +72,7 @@ public class EnergyContainerListener extends BaseListener {
         }
 
         ItemStack itemStack = new ItemStack(block.getType());
-        ItemMeta meta = itemStack.getItemMeta();
-        List<String> lore = new ArrayList<>();
-        lore.add("Energy stored " + block.getMetadata(EnergyCellUtils.BLOCK_DATA).get(0).asInt() + " / " + maxPower);
-        meta.setLore(lore);
-        meta.setDisplayName("Energy container (" + block.getType().name().toLowerCase().replace("_block", "") + ")");
-        itemStack.setItemMeta(meta);
+        plugin.getCellUtils().setPower(itemStack, block.getMetadata(EnergyCellUtils.BLOCK_DATA).get(0).asInt());
         block.getWorld().dropItemNaturally(block.getLocation(), itemStack);
 
         block.setType(Material.AIR);

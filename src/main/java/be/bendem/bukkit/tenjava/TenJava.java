@@ -2,11 +2,12 @@ package be.bendem.bukkit.tenjava;
 
 import be.bendem.bukkit.tenjava.commands.BaseCommand;
 import be.bendem.bukkit.tenjava.commands.CommandHandler;
+import be.bendem.bukkit.tenjava.handlers.EnchantListener;
+import be.bendem.bukkit.tenjava.handlers.EnergyCellListener;
 import be.bendem.bukkit.tenjava.handlers.EnergyChargerListener;
-import be.bendem.bukkit.tenjava.handlers.EnergyContainerListener;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,15 +31,31 @@ public class TenJava extends JavaPlugin {
 
         getServer().addRecipe(new FurnaceRecipe(new ItemStack(Material.BRICK), Material.REDSTONE));
 
-        new EnergyContainerListener(this);
+        new EnergyCellListener(this);
         new EnergyChargerListener(this);
+        new EnchantListener(this);
 
 
         commandHandler = new CommandHandler(this, "energy");
-        commandHandler.register(new BaseCommand("test") {
+        commandHandler.register(new BaseCommand("set") {
             @Override
             public void onCommand(CommandSender commandSender, List<String> args) {
-                commandSender.sendMessage(StringUtils.join(args, " "));
+                if(args.size() < 1) {
+                    commandSender.sendMessage("You miss a parameter :(");
+                }
+                if(!(commandSender instanceof Player)) {
+                    commandSender.sendMessage("You're not a player :(");
+                    return;
+                }
+
+                Player pl = (Player) commandSender;
+                if(pl.getItemInHand() == null || !Config.CONTAINERS.containsKey(pl.getItemInHand().getType())) {
+                    pl.sendMessage("You don't have an cell in your hand");
+                    return;
+                }
+
+                cellUtils.setPower(pl.getItemInHand(), Integer.parseInt(args.get(0)));
+                pl.sendMessage("Your cell has " + cellUtils.getPower(pl.getItemInHand()) + " in it");
             }
         });
     }

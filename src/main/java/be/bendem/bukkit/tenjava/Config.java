@@ -27,5 +27,6 @@ public class Config {
     }
 
     public static final boolean KEEP_ENERGY_WHEN_PICKUP = true;
+    public static final int POWER_PER_LEVEL = 25;
 
 }
