@@ -28,5 +28,20 @@ Maven will download all required dependencies and build a ready-for-use plugin p
 Usage
 -----
 
-1. Install plugin
-2. Do things with it
+Store energy in blocks
+
+![lol](http://bendem.be/uploads/2014/07/12_18-59-01.png)
+
+Charge them blocks
+
+![lol](http://bendem.be/uploads/2014/07/12_18-59-50.png)
+
+![lol](http://bendem.be/uploads/2014/07/12_19-00-42.png)
+
+Use your energy to enchant stuff
+
+![lol](http://bendem.be/uploads/2014/07/12_19-01-19.png)
+
+The block breaker (never mine yourself again 100% not bugged :O)
+
+![lol](http://bendem.be/uploads/2014/07/12_18-52-07.png)

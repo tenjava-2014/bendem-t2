@@ -36,7 +36,7 @@ public class Config {
         added = false;
         ConfigurationSection cells = config.getConfigurationSection("cells");
         for(String material : cells.getKeys(false)) {
-            CONTAINERS.put(Material.valueOf(material.toUpperCase()), fuel.getInt(material));
+            CONTAINERS.put(Material.valueOf(material.toUpperCase()), cells.getInt(material));
             added = true;
         }
         if(!added) {
