@@ -36,6 +36,8 @@ Charge them blocks
 
 ![lol](http://bendem.be/uploads/2014/07/12_18-59-50.png)
 
+Shift right click a cell to check it's content
+
 ![lol](http://bendem.be/uploads/2014/07/12_19-00-42.png)
 
 Use your energy to enchant stuff
