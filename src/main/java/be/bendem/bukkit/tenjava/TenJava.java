@@ -2,9 +2,11 @@ package be.bendem.bukkit.tenjava;
 
 import be.bendem.bukkit.tenjava.commands.BaseCommand;
 import be.bendem.bukkit.tenjava.commands.CommandHandler;
+import be.bendem.bukkit.tenjava.handlers.BlockBreaker;
 import be.bendem.bukkit.tenjava.handlers.EnchantListener;
 import be.bendem.bukkit.tenjava.handlers.EnergyCellListener;
 import be.bendem.bukkit.tenjava.handlers.EnergyChargerListener;
+import be.bendem.bukkit.tenjava.handlers.FurnaceListener;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,6 +36,8 @@ public class TenJava extends JavaPlugin {
         new EnergyCellListener(this);
         new EnergyChargerListener(this);
         new EnchantListener(this);
+        new FurnaceListener(this);
+        new BlockBreaker(this);
 
 
         commandHandler = new CommandHandler(this, "energy");

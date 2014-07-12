@@ -13,13 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author bendem
@@ -49,7 +43,7 @@ public class EnergyCellListener extends BaseListener {
     @EventHandler
     public void onBlockInteract(PlayerInteractEvent e) {
         Block block = e.getClickedBlock();
-        if(block == null || e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if(block == null || e.getAction() != Action.RIGHT_CLICK_BLOCK || !e.getPlayer().isSneaking()) {
             return;
         }
         Integer maxPower = Config.CONTAINERS.get(block.getType());
@@ -58,6 +52,7 @@ public class EnergyCellListener extends BaseListener {
         }
 
         e.getPlayer().sendMessage(ChatColor.AQUA + "Energy stored: " + ChatColor.BOLD + plugin.getCellUtils().getPower(block));
+        e.setCancelled(true);
     }
 
     @EventHandler

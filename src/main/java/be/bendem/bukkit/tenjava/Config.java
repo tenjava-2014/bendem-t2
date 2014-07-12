@@ -14,6 +14,10 @@ public class Config {
     static {
         FUELS = new HashMap<>();
         FUELS.put(Material.REDSTONE, 5);
+        FUELS.put(Material.IRON_INGOT, 10);
+        FUELS.put(Material.GOLD_INGOT, 20);
+        FUELS.put(Material.DIAMOND, 50);
+        FUELS.put(Material.EMERALD, 100);
     }
 
     public static final Map<Material, Integer> CONTAINERS;
@@ -28,5 +32,7 @@ public class Config {
 
     public static final boolean KEEP_ENERGY_WHEN_PICKUP = true;
     public static final int POWER_PER_LEVEL = 25;
+    public static final int DIG_COST = 10;
+    public static final int MAX_DIG_DISTANCE = 50;
 
 }
