@@ -1,7 +1,5 @@
 package be.bendem.bukkit.tenjava.handlers;
 
-import be.bendem.bukkit.tenjava.Config;
-import be.bendem.bukkit.tenjava.EnergyCellUtils;
 import be.bendem.bukkit.tenjava.TenJava;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

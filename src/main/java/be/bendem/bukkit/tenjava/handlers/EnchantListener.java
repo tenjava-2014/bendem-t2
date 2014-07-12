@@ -1,6 +1,5 @@
 package be.bendem.bukkit.tenjava.handlers;
 
-import be.bendem.bukkit.tenjava.Config;
 import be.bendem.bukkit.tenjava.TenJava;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

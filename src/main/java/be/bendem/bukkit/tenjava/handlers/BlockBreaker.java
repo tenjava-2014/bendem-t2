@@ -58,7 +58,7 @@ public class BlockBreaker extends BaseListener {
         }
 
         if(block.isBlockPowered()) {
-            plugin.getLogger().info("Starting");
+            //plugin.getLogger().info("Starting");
             if(task.isStarted()) {
                 restartDigging(block, task);
             } else {
@@ -67,7 +67,7 @@ public class BlockBreaker extends BaseListener {
         } else {
             // If someone understand what I did wrong, please, tell me ;)
             // I lost an aweful amount of time not figuring it out :(
-            plugin.getLogger().info("Stopping");
+            //plugin.getLogger().info("Stopping");
             stopTask(block);
         }
     }
@@ -81,7 +81,7 @@ public class BlockBreaker extends BaseListener {
         stopTask(cell);
         DiggerRunnable diggerRunnable = new DiggerRunnable(frame, cell, direction);
         diggingTasks.put(cell, diggerRunnable);
-        plugin.getLogger().info("Cell registered: " + cell.getLocation());
+        //plugin.getLogger().info("Cell registered: " + cell.getLocation());
         if(start) {
             diggerRunnable.start(plugin);
         }
@@ -169,9 +169,8 @@ public class BlockBreaker extends BaseListener {
 
         @Override
         public void run() {
-            plugin.getLogger().info("Running");
+            //plugin.getLogger().info("Running");
             if(!frame.isValid() || frame.getItem().getType() != Material.DIAMOND_PICKAXE || plugin.getCellUtils().getPower(cell) < plugin.getPluginConfig().DIG_COST) {
-                plugin.getLogger().info("Invalid action");
                 stop();
                 return;
             }
@@ -192,7 +191,7 @@ public class BlockBreaker extends BaseListener {
                     stop();
                 }
             } else {
-                plugin.getLogger().info("No more power");
+                //plugin.getLogger().info("No more power");
                 stop();
             }
         }

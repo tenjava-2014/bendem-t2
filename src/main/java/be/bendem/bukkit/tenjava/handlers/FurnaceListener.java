@@ -1,13 +1,9 @@
 package be.bendem.bukkit.tenjava.handlers;
 
 import be.bendem.bukkit.tenjava.TenJava;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.FurnaceInventory;
-import org.bukkit.inventory.PlayerInventory;
 
 /**
  * @author bendem
