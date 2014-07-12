@@ -27,7 +27,7 @@ public class FurnaceListener extends BaseListener {
             return;
         }
 
-        //e.
+        // Lel, that's not a thing :O
     }
 
 }
