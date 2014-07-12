@@ -3,10 +3,12 @@ package be.bendem.bukkit.tenjava.handlers;
 import be.bendem.bukkit.tenjava.Config;
 import be.bendem.bukkit.tenjava.EnergyCellUtils;
 import be.bendem.bukkit.tenjava.TenJava;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -57,25 +59,25 @@ public class EnergyContainerListener extends BaseListener {
     @EventHandler
     public void onBlockInteract(PlayerInteractEvent e) {
         Block block = e.getClickedBlock();
-        if(block == null) {
+        if(block == null || e.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         Integer maxPower = Config.CONTAINERS.get(block.getType());
-        if(maxPower == null) {
+        if(maxPower == null || ! plugin.getCellUtils().isCell(block)) {
             return;
         }
 
-        plugin.getLogger().info("Block: " + block.getType().name());
-        plugin.getLogger().info("Metadata: " + block.getMetadata(EnergyCellUtils.BLOCK_DATA));
-        plugin.getLogger().info("Metadata: " + block.getMetadata(EnergyCellUtils.BLOCK_DATA).get(0));
-        plugin.getLogger().info("Metadata: " + block.getMetadata(EnergyCellUtils.BLOCK_DATA).get(0).asInt());
+        e.getPlayer().sendMessage(ChatColor.AQUA + "Energy stored: " + ChatColor.BOLD + plugin.getCellUtils().getPower(block));
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         Block block = e.getBlock();
         Integer maxPower = Config.CONTAINERS.get(block.getType());
-        if(maxPower == null || !block.hasMetadata(EnergyCellUtils.BLOCK_DATA) || e.getPlayer().getGameMode() == GameMode.CREATIVE) {
+        if(maxPower == null
+                || !block.hasMetadata(EnergyCellUtils.BLOCK_DATA)
+                || !Config.KEEP_ENERGY_WHEN_PICKUP
+                || e.getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }
 

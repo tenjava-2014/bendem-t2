@@ -27,7 +27,7 @@ public class EnergyCellUtils {
 
     public int addPower(Block cell, int power) {
         int max = Config.CONTAINERS.get(cell.getType());
-        int prev = cell.getMetadata(BLOCK_DATA).get(0).asInt();
+        int prev = getPower(cell);
         if(prev + power > max) {
             setPower(cell, max);
             return prev + power - max;
@@ -36,7 +36,11 @@ public class EnergyCellUtils {
         return 0;
     }
 
-    private void setPower(Block cell, int power) {
+    public int getPower(Block cell) {
+        return cell.getMetadata(BLOCK_DATA).get(0).asInt();
+    }
+
+    public void setPower(Block cell, int power) {
         cell.removeMetadata(BLOCK_DATA, plugin);
         cell.setMetadata(BLOCK_DATA, new FixedMetadataValue(plugin, power));
     }
