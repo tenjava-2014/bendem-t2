@@ -99,11 +99,11 @@ public class BlockBreaker extends BaseListener {
             case NONE:
                 return BlockFace.values()[face == BlockFace.WEST ? 0 : face.ordinal() + 1];
             // Digging bottom
-            case COUNTER_CLOCKWISE:
             case CLOCKWISE:
+            case FLIPPED:
                 return BlockFace.DOWN;
             // Digging left
-            case FLIPPED:
+            case COUNTER_CLOCKWISE:
                 return BlockFace.values()[face == BlockFace.NORTH ? 3 : face.ordinal() - 1];
             default:
                 throw new AssertionError("Impossible to get another value from the Rotation enum");
@@ -114,7 +114,7 @@ public class BlockBreaker extends BaseListener {
 
         private final ItemFrame frame;
         private final Block     cell;
-        private final BlockFace direction;
+        private BlockFace direction;
         private Block current;
         private int numberDigged;
         private boolean started = false;
@@ -123,9 +123,9 @@ public class BlockBreaker extends BaseListener {
         public DiggerRunnable(DiggerRunnable task) {
             this.frame = task.frame;
             this.cell = task.cell;
-            this.direction = task.direction;
             this.current = task.current;
             this.numberDigged = task.numberDigged;
+            this.direction = task.direction;
         }
 
         public DiggerRunnable(ItemFrame frame, Block cell, BlockFace direction) {
@@ -137,6 +137,7 @@ public class BlockBreaker extends BaseListener {
         }
 
         public BukkitTask start(JavaPlugin plugin) {
+            checkDirectionChanged(getDirection(frame));
             started = true;
             return runTaskTimer(plugin, 0, 20);
         }
@@ -145,6 +146,14 @@ public class BlockBreaker extends BaseListener {
             if(started && !stopped) {
                 stopped = true;
                 cancel();
+            }
+        }
+
+        private void checkDirectionChanged(BlockFace newDirection) {
+            if(direction != newDirection) {
+                this.direction = newDirection;
+                this.current = frame.getWorld().getBlockAt(frame.getLocation()).getRelative(newDirection);
+                this.numberDigged = 0;
             }
         }
 
