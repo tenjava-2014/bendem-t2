@@ -57,22 +57,19 @@ public class BlockBreaker extends BaseListener {
             return;
         }
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if(block.isBlockPowered()) {
-                    plugin.getLogger().info("Starting");
-                    if(task.isStarted()) {
-                        restartDigging(block, task);
-                    } else {
-                        task.start(plugin);
-                    }
-                } else {
-                    plugin.getLogger().info("Stopping");
-                    stopTask(block);
-                }
+        if(block.isBlockPowered()) {
+            plugin.getLogger().info("Starting");
+            if(task.isStarted()) {
+                restartDigging(block, task);
+            } else {
+                task.start(plugin);
             }
-        }.runTask(plugin);
+        } else {
+            // If someone understand what I did wrong, please, tell me ;)
+            // I lost an aweful amount of time not figuring it out :(
+            plugin.getLogger().info("Stopping");
+            stopTask(block);
+        }
     }
 
     @EventHandler
