@@ -30,9 +30,10 @@ public class TenJava extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        cellUtils = new EnergyCellUtils(this);
+        saveDefaultConfig();
 
-        config = new Config(super.getConfig());
+        config = new Config(getConfig());
+        cellUtils = new EnergyCellUtils(this);
 
         getServer().addRecipe(new FurnaceRecipe(new ItemStack(Material.BRICK), Material.REDSTONE));
 

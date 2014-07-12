@@ -23,7 +23,7 @@ public class Config {
         boolean added;
         // Load fuels
         added = false;
-        ConfigurationSection fuel = config.getConfigurationSection("fuel");
+        ConfigurationSection fuel = config.getConfigurationSection("fuels");
         for(String material : fuel.getKeys(false)) {
             FUELS.put(Material.valueOf(material.toUpperCase()), fuel.getInt(material));
             added = true;
@@ -45,16 +45,8 @@ public class Config {
 
         KEEP_ENERGY_WHEN_PICKUP = config.getBoolean("keep-energy-when-pickup", true);
         POWER_PER_LEVEL = config.getInt("power-per-enchant-level", 25);
-        DIG_COST = config.getInt("power-per-enchant-level", 10);
-        MAX_DIG_DISTANCE = config.getInt("power-per-enchant-level", 50);
-    }
-
-    private void defaultContainer() {
-        CONTAINERS.put(Material.REDSTONE_BLOCK, 100);
-        CONTAINERS.put(Material.IRON_BLOCK, 200);
-        CONTAINERS.put(Material.GOLD_BLOCK, 500);
-        CONTAINERS.put(Material.DIAMOND_BLOCK, 1_000);
-        CONTAINERS.put(Material.EMERALD_BLOCK, 10_000);
+        DIG_COST = config.getInt("dig-cost", 10);
+        MAX_DIG_DISTANCE = config.getInt("max-dig-distance", 50);
     }
 
     private void defaultFuel() {
@@ -63,6 +55,14 @@ public class Config {
         FUELS.put(Material.GOLD_INGOT, 20);
         FUELS.put(Material.DIAMOND, 50);
         FUELS.put(Material.EMERALD, 100);
+    }
+
+    private void defaultContainer() {
+        CONTAINERS.put(Material.REDSTONE_BLOCK, 100);
+        CONTAINERS.put(Material.IRON_BLOCK, 200);
+        CONTAINERS.put(Material.GOLD_BLOCK, 500);
+        CONTAINERS.put(Material.DIAMOND_BLOCK, 1_000);
+        CONTAINERS.put(Material.EMERALD_BLOCK, 10_000);
     }
 
 }

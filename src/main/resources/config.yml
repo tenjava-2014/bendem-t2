@@ -1,0 +1,24 @@
+# The block which can be used as energy containers and their max capacity
+cells:
+    REDSTONE_BLOCK: 100
+    IRON_BLOCK: 200
+    GOLD_BLOCK: 500
+    DIAMOND_BLOCK: 1000
+    EMERALD_BLOCK: 10000
+
+# The items which can be burnt to power a cell and the power each provide
+fuels:
+    REDSTONE: 5
+    IRON_INGOT: 10
+    GOLD_INGOT: 20
+    DIAMOND: 50
+    EMERALD: 100
+
+# Does a cell keep its energy when picked up
+keep-energy-when-pickup: true
+# The energy cost per enchant level when using energy to power an enchant table
+power-per-enchant-level: 25
+# The cost of digging a block when using the *block breaker*
+dig-cost: 10
+# the maximum distance a *block breaker* can reach
+max-dig-distance: 50
