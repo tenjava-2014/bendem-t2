@@ -10,6 +10,12 @@ import java.util.Map;
  */
 public class Config {
 
+    public static final Map<Material, Integer> FUELS;
+    static {
+        FUELS = new HashMap<>();
+        FUELS.put(Material.REDSTONE, 5);
+    }
+
     public static final Map<Material, Integer> CONTAINERS;
     static {
         CONTAINERS = new HashMap<>();
