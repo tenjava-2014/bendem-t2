@@ -1,6 +1,5 @@
 package be.bendem.bukkit.tenjava.handlers;
 
-import be.bendem.bukkit.tenjava.Config;
 import be.bendem.bukkit.tenjava.TenJava;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -10,7 +9,6 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -53,32 +51,37 @@ public class BlockBreaker extends BaseListener {
 
     @EventHandler
     public void onCellPower(BlockPhysicsEvent e) {
-        DiggerRunnable task = diggingTasks.get(e.getBlock());
+        final Block block = e.getBlock();
+        DiggerRunnable task = diggingTasks.get(block);
         if(task == null) {
             return;
         }
 
-        if(e.getBlock().isBlockPowered()) {
-            if(task.isStarted()) {
-                restartDigging(task);
-            } else {
-                task.start(plugin);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(block.isBlockPowered()) {
+                    plugin.getLogger().info("Starting");
+                    if(task.isStarted()) {
+                        restartDigging(block, task);
+                    } else {
+                        task.start(plugin);
+                    }
+                } else {
+                    plugin.getLogger().info("Stopping");
+                    stopTask(block);
+                }
             }
-        } else {
-            task.stop();
-        }
+        }.runTask(plugin);
     }
 
     @EventHandler
     public void onCellBreak(BlockBreakEvent e) {
-        DiggerRunnable task = diggingTasks.get(e.getBlock());
-        if(task != null) {
-            task.stop();
-            diggingTasks.remove(e.getBlock());
-        }
+        stopTask(e.getBlock());
     }
 
     private void registerTask(ItemFrame frame, Block cell, BlockFace direction, boolean start) {
+        stopTask(cell);
         DiggerRunnable diggerRunnable = new DiggerRunnable(frame, cell, direction);
         diggingTasks.put(cell, diggerRunnable);
         plugin.getLogger().info("Cell registered: " + cell.getLocation());
@@ -87,9 +90,19 @@ public class BlockBreaker extends BaseListener {
         }
     }
 
-    private void restartDigging(DiggerRunnable task) {
-        task.stop();
-        new DiggerRunnable(task).start(plugin);
+    private void stopTask(Block cell) {
+        DiggerRunnable runnable = diggingTasks.get(cell);
+        if(runnable != null) {
+            runnable.stop();
+            diggingTasks.remove(cell);
+        }
+    }
+
+    private void restartDigging(Block cell, DiggerRunnable task) {
+        stopTask(cell);
+        DiggerRunnable diggerRunnable = new DiggerRunnable(task);
+        diggingTasks.put(cell, task);
+        diggerRunnable.start(plugin);
     }
 
     private BlockFace getDirection(ItemFrame frame) {
@@ -113,7 +126,7 @@ public class BlockBreaker extends BaseListener {
     private class DiggerRunnable extends BukkitRunnable {
 
         private final ItemFrame frame;
-        private final Block     cell;
+        private final Block cell;
         private BlockFace direction;
         private Block current;
         private int numberDigged;
@@ -165,7 +178,13 @@ public class BlockBreaker extends BaseListener {
                 stop();
                 return;
             }
-
+/*
+            // Where does these tasks disapear? :O hegfkze lfglugf lreglor
+            if(!diggingTasks.containsValue(this)) {
+                stop();
+                return;
+            }
+*/
             if(plugin.getCellUtils().removePower(cell, plugin.getPluginConfig().DIG_COST) == plugin.getPluginConfig().DIG_COST) {
                 if(current.getType() != Material.AIR) {
                     current.breakNaturally(frame.getItem());
