@@ -1,3 +1,3 @@
 name: bendem-t2
-main: com.tenjava.entries.bendem.t2.TenJava
+main: be.bendem.bukkit.tenjava.TenJava
 version: '${project.version}'
