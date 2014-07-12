@@ -151,19 +151,19 @@ public class BlockBreaker extends BaseListener {
         @Override
         public void run() {
             plugin.getLogger().info("Running");
-            if(!frame.isValid() || frame.getItem().getType() != Material.DIAMOND_PICKAXE || plugin.getCellUtils().getPower(cell) < Config.DIG_COST) {
+            if(!frame.isValid() || frame.getItem().getType() != Material.DIAMOND_PICKAXE || plugin.getCellUtils().getPower(cell) < plugin.getPluginConfig().DIG_COST) {
                 plugin.getLogger().info("Invalid action");
                 stop();
                 return;
             }
 
-            if(plugin.getCellUtils().removePower(cell, Config.DIG_COST) == Config.DIG_COST) {
+            if(plugin.getCellUtils().removePower(cell, plugin.getPluginConfig().DIG_COST) == plugin.getPluginConfig().DIG_COST) {
                 if(current.getType() != Material.AIR) {
                     current.breakNaturally(frame.getItem());
                 }
                 current = current.getRelative(direction);
                 numberDigged++;
-                if(numberDigged > Config.MAX_DIG_DISTANCE) {
+                if(numberDigged > plugin.getPluginConfig().MAX_DIG_DISTANCE) {
                     stop();
                 }
             } else {

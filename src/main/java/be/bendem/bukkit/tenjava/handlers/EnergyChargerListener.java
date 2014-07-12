@@ -25,7 +25,7 @@ public class EnergyChargerListener extends BaseListener {
     @EventHandler
     public void onItemSmelt(FurnaceSmeltEvent e) {
         // TODO Checks
-        Integer energy = Config.FUELS.get(e.getSource().getType());
+        Integer energy = plugin.getPluginConfig().FUELS.get(e.getSource().getType());
         if(energy == null) {
             return;
         }

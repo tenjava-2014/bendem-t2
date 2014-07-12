@@ -36,7 +36,7 @@ public class EnchantListener extends BaseListener {
 
         int availablePower = plugin.getCellUtils().getAdjacentPower(e.getEnchantBlock());
         // Enchant from power available
-        int maxEnchantLvl = availablePower / Config.POWER_PER_LEVEL;
+        int maxEnchantLvl = availablePower / plugin.getPluginConfig().POWER_PER_LEVEL;
         maxEnchantLvl += previousLevel;
 
         //e.getEnchanter().sendMessage("Set lvl to " +  e.getEnchanter().getLevel());
@@ -45,10 +45,10 @@ public class EnchantListener extends BaseListener {
 
     @EventHandler
     public void onItemEnchant(EnchantItemEvent e) {
-        int remaining = plugin.getCellUtils().removeAdjacentPower(e.getEnchantBlock(), e.getExpLevelCost() * Config.POWER_PER_LEVEL);
+        int remaining = plugin.getCellUtils().removeAdjacentPower(e.getEnchantBlock(), e.getExpLevelCost() * plugin.getPluginConfig().POWER_PER_LEVEL);
         //e.getEnchanter().sendMessage("remaining: " + remaining);
         if(remaining > 0) {
-            int lvlToRemove = openInventories.get(e.getEnchanter().getUniqueId()) - remaining / Config.POWER_PER_LEVEL;
+            int lvlToRemove = openInventories.get(e.getEnchanter().getUniqueId()) - remaining / plugin.getPluginConfig().POWER_PER_LEVEL;
             //e.getEnchanter().sendMessage("to remove: " + lvlToRemove);
             openInventories.put(e.getEnchanter().getUniqueId(), lvlToRemove);
         }

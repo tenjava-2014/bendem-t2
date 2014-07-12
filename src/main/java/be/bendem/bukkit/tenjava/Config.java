@@ -1,6 +1,8 @@
 package be.bendem.bukkit.tenjava;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,19 +12,44 @@ import java.util.Map;
  */
 public class Config {
 
-    public static final Map<Material, Integer> FUELS;
-    static {
-        FUELS = new HashMap<>();
-        FUELS.put(Material.REDSTONE, 5);
-        FUELS.put(Material.IRON_INGOT, 10);
-        FUELS.put(Material.GOLD_INGOT, 20);
-        FUELS.put(Material.DIAMOND, 50);
-        FUELS.put(Material.EMERALD, 100);
+    public final Map<Material, Integer> FUELS      = new HashMap<>();
+    public final Map<Material, Integer> CONTAINERS = new HashMap<>();
+    public final boolean KEEP_ENERGY_WHEN_PICKUP;
+    public final int     POWER_PER_LEVEL;
+    public final int     DIG_COST;
+    public final int     MAX_DIG_DISTANCE;
+
+    public Config(FileConfiguration config) {
+        boolean added;
+        // Load fuels
+        added = false;
+        ConfigurationSection fuel = config.getConfigurationSection("fuel");
+        for(String material : fuel.getKeys(false)) {
+            FUELS.put(Material.valueOf(material.toUpperCase()), fuel.getInt(material));
+            added = true;
+        }
+        if(!added) {
+            defaultFuel();
+        }
+
+        // Load Cells
+        added = false;
+        ConfigurationSection cells = config.getConfigurationSection("cells");
+        for(String material : cells.getKeys(false)) {
+            CONTAINERS.put(Material.valueOf(material.toUpperCase()), fuel.getInt(material));
+            added = true;
+        }
+        if(!added) {
+            defaultContainer();
+        }
+
+        KEEP_ENERGY_WHEN_PICKUP = config.getBoolean("keep-energy-when-pickup", true);
+        POWER_PER_LEVEL = config.getInt("power-per-enchant-level", 25);
+        DIG_COST = config.getInt("power-per-enchant-level", 10);
+        MAX_DIG_DISTANCE = config.getInt("power-per-enchant-level", 50);
     }
 
-    public static final Map<Material, Integer> CONTAINERS;
-    static {
-        CONTAINERS = new HashMap<>();
+    private void defaultContainer() {
         CONTAINERS.put(Material.REDSTONE_BLOCK, 100);
         CONTAINERS.put(Material.IRON_BLOCK, 200);
         CONTAINERS.put(Material.GOLD_BLOCK, 500);
@@ -30,9 +57,12 @@ public class Config {
         CONTAINERS.put(Material.EMERALD_BLOCK, 10_000);
     }
 
-    public static final boolean KEEP_ENERGY_WHEN_PICKUP = true;
-    public static final int POWER_PER_LEVEL = 25;
-    public static final int DIG_COST = 10;
-    public static final int MAX_DIG_DISTANCE = 50;
+    private void defaultFuel() {
+        FUELS.put(Material.REDSTONE, 5);
+        FUELS.put(Material.IRON_INGOT, 10);
+        FUELS.put(Material.GOLD_INGOT, 20);
+        FUELS.put(Material.DIAMOND, 50);
+        FUELS.put(Material.EMERALD, 100);
+    }
 
 }

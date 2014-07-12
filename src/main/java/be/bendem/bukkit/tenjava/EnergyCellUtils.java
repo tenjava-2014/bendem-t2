@@ -27,11 +27,11 @@ public class EnergyCellUtils {
     }
 
     public boolean isCell(Block block) {
-        return Config.CONTAINERS.containsKey(block.getType()) && block.getMetadata(BLOCK_DATA) != null && block.getMetadata(BLOCK_DATA).size() > 0;
+        return plugin.getPluginConfig().CONTAINERS.containsKey(block.getType()) && block.getMetadata(BLOCK_DATA) != null && block.getMetadata(BLOCK_DATA).size() > 0;
     }
 
     public boolean isFull(Block cell) {
-        return cell.getMetadata(BLOCK_DATA).get(0).asInt() >= Config.CONTAINERS.get(cell.getType());
+        return cell.getMetadata(BLOCK_DATA).get(0).asInt() >= plugin.getPluginConfig().CONTAINERS.get(cell.getType());
     }
 
     /**
@@ -41,7 +41,7 @@ public class EnergyCellUtils {
      * @return the power which could not be added because the cell was full
      */
     public int addPower(Block cell, int power) {
-        int max = Config.CONTAINERS.get(cell.getType());
+        int max = plugin.getPluginConfig().CONTAINERS.get(cell.getType());
         int prev = getPower(cell);
         if(prev + power > max) {
             setPower(cell, max);
@@ -92,7 +92,7 @@ public class EnergyCellUtils {
      * @return the power contained
      */
     public int getPower(ItemStack cell) {
-        Integer maxPower = Config.CONTAINERS.get(cell.getType());
+        Integer maxPower = plugin.getPluginConfig().CONTAINERS.get(cell.getType());
         if(maxPower == null) {
             return 0;
         }
@@ -113,7 +113,7 @@ public class EnergyCellUtils {
      * @param power the power to set
      */
     public void setPower(ItemStack cell, int power) {
-        Integer maxPower = Config.CONTAINERS.get(cell.getType());
+        Integer maxPower = plugin.getPluginConfig().CONTAINERS.get(cell.getType());
         ItemMeta meta = cell.getItemMeta();
         List<String> lore = new ArrayList<>();
         lore.add("Energy stored " + power + " / " + maxPower);

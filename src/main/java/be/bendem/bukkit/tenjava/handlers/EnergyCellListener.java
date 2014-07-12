@@ -31,7 +31,7 @@ public class EnergyCellListener extends BaseListener {
     public void onBlockPlace(BlockPlaceEvent e) {
         Block block = e.getBlock();
         ItemStack hand = e.getItemInHand();
-        Integer maxPower = Config.CONTAINERS.get(block.getType());
+        Integer maxPower = plugin.getPluginConfig().CONTAINERS.get(block.getType());
         if(maxPower == null || hand == null) {
             return;
         }
@@ -46,7 +46,7 @@ public class EnergyCellListener extends BaseListener {
         if(block == null || e.getAction() != Action.RIGHT_CLICK_BLOCK || !e.getPlayer().isSneaking()) {
             return;
         }
-        Integer maxPower = Config.CONTAINERS.get(block.getType());
+        Integer maxPower = plugin.getPluginConfig().CONTAINERS.get(block.getType());
         if(maxPower == null || ! plugin.getCellUtils().isCell(block)) {
             return;
         }
@@ -58,10 +58,10 @@ public class EnergyCellListener extends BaseListener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         Block block = e.getBlock();
-        Integer maxPower = Config.CONTAINERS.get(block.getType());
+        Integer maxPower = plugin.getPluginConfig().CONTAINERS.get(block.getType());
         if(maxPower == null
                 || !block.hasMetadata(EnergyCellUtils.BLOCK_DATA)
-                || !Config.KEEP_ENERGY_WHEN_PICKUP
+                || !plugin.getPluginConfig().KEEP_ENERGY_WHEN_PICKUP
                 || e.getPlayer().getGameMode() == GameMode.CREATIVE) {
             return;
         }

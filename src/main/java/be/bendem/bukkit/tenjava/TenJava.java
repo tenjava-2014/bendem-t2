@@ -26,10 +26,13 @@ public class TenJava extends JavaPlugin {
 
     private CommandHandler commandHandler;
     private EnergyCellUtils cellUtils;
+    private Config config;
 
     @Override
     public void onEnable() {
         cellUtils = new EnergyCellUtils(this);
+
+        config = new Config(super.getConfig());
 
         getServer().addRecipe(new FurnaceRecipe(new ItemStack(Material.BRICK), Material.REDSTONE));
 
@@ -53,7 +56,7 @@ public class TenJava extends JavaPlugin {
                 }
 
                 Player pl = (Player) commandSender;
-                if(pl.getItemInHand() == null || !Config.CONTAINERS.containsKey(pl.getItemInHand().getType())) {
+                if(pl.getItemInHand() == null || !config.CONTAINERS.containsKey(pl.getItemInHand().getType())) {
                     pl.sendMessage("You don't have an cell in your hand");
                     return;
                 }
@@ -62,6 +65,10 @@ public class TenJava extends JavaPlugin {
                 pl.sendMessage("Your cell has " + cellUtils.getPower(pl.getItemInHand()) + " in it");
             }
         });
+    }
+
+    public Config getPluginConfig() {
+        return config;
     }
 
     public EnergyCellUtils getCellUtils() {
